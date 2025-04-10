@@ -1,0 +1,62 @@
+tags:
+  - Auth
+summary: Login a user
+operationId: signinUser
+description: 'Login a user'
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            description: "User's email"
+            type: string
+            example: example@ukr.net
+          password:
+            description: "User's password"
+            type: string
+            example: 'password123'
+responses:
+  '200':
+    description: 'User successfully logged in'
+    headers:
+      Set-Cookie:
+        description: Cookies with session details
+        schema:
+          type: string
+          example: 'refreshToken=...; sessionId=...;'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'User successfully logged in'
+            data:
+              type: object
+              properties:
+                accessToken:
+                  description: 'Access token for the user'
+                  type: string
+                  example: 'base64encodedaccesstoken'
+
+  '404':
+    $ref: '../../components/responses/404.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '500':
+    $ref: ../../components/responses/500.yaml

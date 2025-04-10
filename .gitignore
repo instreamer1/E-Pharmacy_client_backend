@@ -1,0 +1,22 @@
+//.gitignore
+# зависимости
+/node_modules
+
+# переменные окружения
+.env
+
+# IDE и редакторы
+.vscode/
+.idea/
+
+# системные файлы
+.DS_Store
+
+# логи
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# сборки
+dist/
+build/
