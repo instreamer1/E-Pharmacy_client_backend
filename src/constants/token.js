@@ -9,5 +9,3 @@ export const JWT_REFRESH_EXPIRES_IN = '30d';
 export const JWT_RESET_SECRET =  env("JWT_RESET_SECRET") || 'SecretKeyForReset';
 export const ADMIN_EMAIL = env('ADMIN_EMAIL');
 export const FRONTEND_DOMAIN = env('FRONTEND_DOMAIN');
-
-
