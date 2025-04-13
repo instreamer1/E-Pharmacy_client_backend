@@ -2,7 +2,11 @@
 
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-import { hashPasswordIfModified, mongooseSaveError, setUpdateSettings } from './hooks.js';
+import {
+  hashPasswordIfModified,
+  mongooseSaveError,
+  setUpdateSettings,
+} from './hooks.js';
 
 const UserSchema = new mongoose.Schema(
   {
@@ -19,16 +23,10 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       validate: {
-        validator: (email) => /^\S+@\S+\.\S+$/.test(email),
+        validator: (email) =>
+          /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email),
         message: 'Please provide a valid email address',
       },
-    },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
-      minlength: [8, 'Password must be at least 8 characters'],
-      maxlength: [30, 'The password must be no more than 30 characters long.'],
-      select: false,
     },
     phone: {
       type: String,
@@ -37,6 +35,17 @@ const UserSchema = new mongoose.Schema(
         validator: (phone) => /^\+?[1-9]\d{1,14}$/.test(phone),
         message: 'Please provide a valid phone number',
       },
+    },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+      minlength: [7, 'Password must be at least 8 characters'],
+      maxlength: [30, 'The password must be no more than 30 characters long.'],
+      validate: {
+        validator: (password) => /^\S+$/.test(password),
+        message: 'Please provide a valid password',
+      },
+      select: false,
     },
     resetPasswordToken: {
       type: String,
@@ -48,11 +57,9 @@ const UserSchema = new mongoose.Schema(
       default: null,
       select: false,
     },
-
   },
   { timestamps: true },
 );
-
 
 UserSchema.pre('save', hashPasswordIfModified);
 
