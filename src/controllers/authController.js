@@ -103,8 +103,8 @@ export const loginController = async (req, res, next) => {
 
 export const logoutController = async (req, res, next) => {
   try {
-    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
-    console.log('refreshToken', refreshToken);
+    const refreshToken = req.cookies.refreshToken || req.body?.refreshToken;
+   
     if (!refreshToken) {
       return res.status(400).json({ message: 'Refresh token is required' });
     }
