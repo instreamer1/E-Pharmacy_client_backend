@@ -4,8 +4,8 @@ import { Router } from 'express';
 
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 import validateBody from '../utils/validateBody.js';
-import  authMiddleware  from '../middlewares/authMiddleware.js';
-import  authenticate  from '../middlewares/authenticate.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
+import authenticate from '../middlewares/authenticate.js';
 import {
   getCurrentUserController,
   loginController,
@@ -22,8 +22,12 @@ import {
   requestResetEmailSchema,
   changePasswordSchema,
 } from '../schemas/userSchema.js';
-import { refreshLimiter, changePasswordLimiter, resetEmailLimiter, loginLimiter } from '../middlewares/rateLimiters.js';
-
+import {
+  refreshLimiter,
+  changePasswordLimiter,
+  resetEmailLimiter,
+  loginLimiter,
+} from '../middlewares/rateLimiters.js';
 
 const authRouter = Router();
 
@@ -39,11 +43,7 @@ authRouter.post(
   ctrlWrapper(loginController),
 );
 
-authRouter.get(
-  '/current',
-  authenticate,
-  ctrlWrapper(getCurrentUserController),
-);
+authRouter.get('/current', authenticate, ctrlWrapper(getCurrentUserController));
 
 authRouter.post(
   '/refresh',

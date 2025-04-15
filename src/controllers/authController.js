@@ -57,21 +57,16 @@ export const registerController = async (req, res, next) => {
 
 export const loginController = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log('Login password:', password);
 
   try {
     const user = await findUserByEmail({ email });
-    console.log('пользователь:', user);
-    console.log('Найден email:', email);
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    console.log('Пароль из базы данных:', user.password);
-
     const isPasswordValid = await user.comparePassword(password);
-    console.log('Совпадение паролей:', isPasswordValid);
+
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -97,8 +92,9 @@ export const loginController = async (req, res, next) => {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 day
     });
-    res.clearCookie('cookieName');
     res.status(200).json({ accessToken });
   } catch (error) {
     next(error);
@@ -108,6 +104,7 @@ export const loginController = async (req, res, next) => {
 export const logoutController = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+    console.log('refreshToken', refreshToken);
     if (!refreshToken) {
       return res.status(400).json({ message: 'Refresh token is required' });
     }
@@ -119,8 +116,13 @@ export const logoutController = async (req, res, next) => {
       return res.status(404).json({ message: 'Session not found' });
     }
 
-    res.clearCookie('refreshToken');
-    res.json({ message: 'Logged out successfully' });
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      sameSite: 'Strict',
+      secure: true,
+    });
+
+    res.status(200).json({ message: 'Logged out successfully' });
   } catch (error) {
     next(error);
   }
@@ -199,12 +201,13 @@ export const refreshTokenController = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 day
     });
 
     res.setHeader('Authorization', `Bearer ${accessToken}`);
     res.json({
       accessToken,
-      refreshToken: newRefreshToken,
+      // refreshToken: newRefreshToken,  //не используется  на фронте  т.к. он httpOnly
       expiresIn: 600,
     });
   } catch (error) {
