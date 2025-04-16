@@ -91,9 +91,11 @@ export const loginController = async (req, res, next) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'Strict', //'Strict'
+      sameSite: 'None', //'Strict'
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 day
+      // sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
+      // secure: process.env.NODE_ENV === 'production',
     });
     res.status(200).json({ accessToken });
   } catch (error) {
@@ -119,7 +121,7 @@ export const logoutController = async (req, res, next) => {
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      sameSite: 'Strict',
+      sameSite: 'None',
       secure: true,
     });
 
@@ -201,7 +203,8 @@ export const refreshTokenController = async (req, res) => {
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'Strict',
+      sameSite: 'None',
+      path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 day
     });
 
