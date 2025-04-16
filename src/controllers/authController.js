@@ -105,8 +105,7 @@ export const loginController = async (req, res, next) => {
 
 export const logoutController = async (req, res, next) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
-    // || req.body?.refreshToken;
+    const refreshToken = req.cookies.refreshToken || req.body?.refreshToken;
     console.log('!!!!!!!refreshToken', refreshToken);
     if (!refreshToken) {
       return res.status(400).json({ message: 'Refresh token is required' });
@@ -149,7 +148,7 @@ export const getCurrentUserController = async (req, res) => {
 
 export const refreshTokenController = async (req, res) => {
   try {
-    const { refreshToken } = req.cookies;
+    const refreshToken = req.cookies.refreshToken || req.body?.refreshToken;
     if (!refreshToken) {
       return res.status(400).json({ message: 'Refresh token is required' });
     }
@@ -211,7 +210,6 @@ export const refreshTokenController = async (req, res) => {
     res.setHeader('Authorization', `Bearer ${accessToken}`);
     res.json({
       accessToken,
-      // refreshToken: newRefreshToken,  //не используется  на фронте  т.к. он httpOnly
       expiresIn: 600,
     });
   } catch (error) {
