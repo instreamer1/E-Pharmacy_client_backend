@@ -43,6 +43,7 @@ const startServer = () => {
     Boolean,
   );
 
+
   const corsOptions = {
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {

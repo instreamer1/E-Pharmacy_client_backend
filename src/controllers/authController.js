@@ -91,7 +91,7 @@ export const loginController = async (req, res, next) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'Strict', //'Strict'
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 day
     });
@@ -103,8 +103,9 @@ export const loginController = async (req, res, next) => {
 
 export const logoutController = async (req, res, next) => {
   try {
-    const refreshToken = req.cookies.refreshToken || req.body?.refreshToken;
-   
+    const refreshToken = req.cookies.refreshToken;
+    // || req.body?.refreshToken;
+    console.log('!!!!!!!refreshToken', refreshToken);
     if (!refreshToken) {
       return res.status(400).json({ message: 'Refresh token is required' });
     }
@@ -200,7 +201,7 @@ export const refreshTokenController = async (req, res) => {
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'Strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 day
     });
 
