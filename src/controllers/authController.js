@@ -106,7 +106,7 @@ export const loginController = async (req, res, next) => {
 export const logoutController = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken || req.body?.refreshToken;
-    console.log('!!!!!!!refreshToken', refreshToken);
+
     if (!refreshToken) {
       return res.status(400).json({ message: 'Refresh token is required' });
     }
@@ -130,7 +130,7 @@ export const logoutController = async (req, res, next) => {
   }
 };
 
-export const getCurrentUserController = async (req, res) => {
+export const getCurrentUserController = async (req, res, next) => {
   try {
     const userId = req.userId;
 
@@ -140,13 +140,18 @@ export const getCurrentUserController = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json(user);
+    res.json({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    // res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 };
 
-export const refreshTokenController = async (req, res) => {
+export const refreshTokenController = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken || req.body?.refreshToken;
     if (!refreshToken) {
@@ -213,8 +218,8 @@ export const refreshTokenController = async (req, res) => {
       expiresIn: 600,
     });
   } catch (error) {
-    console.error('Refresh token error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
+    // res.status(500).json({ message: 'Internal server error' });
   }
 };
 

@@ -9,6 +9,11 @@ import authRouter from './routers/authRoutes.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 import swaggerDocs from './middlewares/swaggerDocs.js';
+import productRoutes from './routers/productRoutes.js';
+import pharmacyRoutes from './routers/pharmacyRoutes.js';
+import reviewRoutes from './routers/reviewRoutes.js';
+import cartRoutes from './routers/cartRoutes.js';
+import orderRoutes from './routers/orderRoutes.js';
 
 const PORT = Number(env('PORT', '3000'));
 const FRONTEND_DOMAIN = env('FRONTEND_DOMAIN');
@@ -43,7 +48,6 @@ const startServer = () => {
     Boolean,
   );
 
-
   const corsOptions = {
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
@@ -70,8 +74,11 @@ const startServer = () => {
 
   // Paths
   app.use('/users', authRouter);
-  // app.use('/api/products', productsRouter);
-  // app.use('/api/orders', ordersRouter);
+  app.use('/products', productRoutes);
+  app.use('/stores', pharmacyRoutes);
+  app.use('/customer-reviews', reviewRoutes);
+  app.use('/cart', cartRoutes);
+  app.use('/orders', orderRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

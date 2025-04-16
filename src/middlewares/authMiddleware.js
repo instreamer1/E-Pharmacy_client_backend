@@ -5,7 +5,7 @@ import { JWT_REFRESH_SECRET } from '../constants/token.js';
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+    const refreshToken = req.cookies.refreshToken || req.body?.refreshToken;
 
     if (!refreshToken) {
       return res.status(401).json({ message: 'Refresh token is required' });
