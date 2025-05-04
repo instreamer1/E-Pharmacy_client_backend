@@ -1,9 +1,9 @@
-// middlewares/authenticate.js
+// middlewares/verifyAccessTokenMiddleware.js
 
 import { checkTokenRevoked, verifyAccessToken } from '../utils/tokenService.js';
 import ApiError from '../utils/ApiError.js';
 
-const authenticate = async (req, res, next) => {
+const verifyAccessTokenMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -14,8 +14,10 @@ const authenticate = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
     const { userId, jti } = verifyAccessToken(token, 'access');
 
-    console.log('Юзер', userId);
-    console.log('Юзер-jti', jti);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('User ID:', userId);
+      console.log('Token JTI:', jti);
+    }
 
     if (await checkTokenRevoked(jti)) {
       throw ApiError.UnauthorizedError('Token has been revoked ');
@@ -25,13 +27,13 @@ const authenticate = async (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return next(ApiError.UnauthorizedError('Token expired'));
+      return next(ApiError.UnauthorizedError('Access token expired'));
     }
     if (error.name === 'JsonWebTokenError') {
-      return next(ApiError.UnauthorizedError('Invalid token'));
+      return next(ApiError.UnauthorizedError('Invalid access token'));
     }
     next(error);
   }
 };
 
-export default authenticate;
+export default verifyAccessTokenMiddleware;

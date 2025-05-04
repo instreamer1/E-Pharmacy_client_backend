@@ -1,4 +1,4 @@
-import Product from '../db/models/Product.js';
+import ProductCollection from '../db/models/Product.js';
 
 export const getFilteredProducts = async ({
   search = '',
@@ -7,18 +7,18 @@ export const getFilteredProducts = async ({
   limit = 6,
 }) => {
   const query = {
-    name: { $regex: search, $options: 'i' }, // Поиск по имени
+    name: { $regex: search, $options: 'i' }, 
   };
 
   if (category && category !== 'All') {
-    query.category = category; // Не фильтруем по "All"
+    query.category = category;
   }
 
   const skip = (page - 1) * limit;
 
   const [products, total] = await Promise.all([
-    Product.find(query).skip(skip).limit(Number(limit)),
-    Product.countDocuments(query),
+    ProductCollection.find(query).skip(skip).limit(Number(limit)),
+    ProductCollection.countDocuments(query),
   ]);
 
   return {
@@ -31,10 +31,10 @@ export const getFilteredProducts = async ({
 };
 
 export const findProductById = (filter) => {
-  const product = Product.findById(filter);
+  const product = ProductCollection.findById(filter);
   return product;
 };
 
 export const findAllCategories = () => {
-  return Product.distinct('category');
+  return ProductCollection.distinct('category');
 };

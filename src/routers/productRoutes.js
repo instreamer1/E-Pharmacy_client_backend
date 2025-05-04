@@ -1,15 +1,16 @@
 import express from 'express';
 import {
   getProducts,
-  getProductById,
   getAllCategories,
+  getProductByIdWithReviews,
 } from '../controllers/productController.js';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
+import optionalAuth from '../middlewares/optionalAuthMiddleware.js';
 
 const productRoutes = express.Router();
 
 productRoutes.get('/', ctrlWrapper(getProducts));
-productRoutes.get('/categories', getAllCategories);
-productRoutes.get('/:id', ctrlWrapper(getProductById));
+productRoutes.get('/categories', ctrlWrapper(getAllCategories));
+productRoutes.get('/:id', optionalAuth, ctrlWrapper(getProductByIdWithReviews));
 
 export default productRoutes;

@@ -22,7 +22,7 @@ import { parseJwtExpTime } from '../utils/parseExpTime.js';
 import {
   createSession,
   findSessionByUserIdAndJti,
-} from '../services/sessions.js';
+} from '../services/sessionsService.js';
 import { changePassword, requestResetToken } from '../services/authServices.js';
 
 export const registerController = async (req, res, next) => {

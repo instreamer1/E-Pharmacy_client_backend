@@ -4,8 +4,8 @@ import { Router } from 'express';
 
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 import validateBody from '../utils/validateBody.js';
-import authMiddleware from '../middlewares/authMiddleware.js';
-import authenticate from '../middlewares/authenticate.js';
+import verifyRefreshTokenMiddleware from '../middlewares/verifyRefreshTokenMiddleware.js';
+
 import {
   getCurrentUserController,
   loginController,
@@ -28,6 +28,7 @@ import {
   resetEmailLimiter,
   loginLimiter,
 } from '../middlewares/rateLimiters.js';
+import verifyAccessTokenMiddleware from '../middlewares/verifyAccessTokenMiddleware.js';
 
 const authRouter = Router();
 
@@ -43,14 +44,14 @@ authRouter.post(
   ctrlWrapper(loginController),
 );
 
-authRouter.post('/logout', ctrlWrapper(logoutController));
+authRouter.post('/logout', verifyAccessTokenMiddleware, ctrlWrapper(logoutController));
 
-authRouter.get('/user-info', authenticate, ctrlWrapper(getCurrentUserController));
+authRouter.get('/user-info',verifyAccessTokenMiddleware, ctrlWrapper(getCurrentUserController));
 
 authRouter.post(
   '/refresh',
   refreshLimiter,
-  authMiddleware,
+  verifyRefreshTokenMiddleware,
   ctrlWrapper(refreshTokenController),
 );
 

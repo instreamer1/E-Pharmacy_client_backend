@@ -1,8 +1,11 @@
-
-
-
 // GET /api/products?search=aspirin&category=Medicine
-import { findAllCategories, findProductById, getFilteredProducts } from '../services/productsServices.js';
+import ReviewCollection from '../db/models/Review.js';
+import {
+  findAllCategories,
+  findProductById,
+  getFilteredProducts,
+} from '../services/productsServices.js';
+import ApiError from '../utils/ApiError.js';
 
 export const getProducts = async (req, res, next) => {
   try {
@@ -21,14 +24,45 @@ export const getProducts = async (req, res, next) => {
 };
 
 // GET /api/products/:id
-export const getProductById = async (req, res,next) => {
+export const getProductByIdWithReviews = async (req, res, next) => {
+  const { id: productId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 6;
+  const skip = (page - 1) * limit;
+  const userId = req.user?._id;
+
+  // if (!mongoose.Types.ObjectId.isValid(productId)) {
+  //   return next(ApiError.BadRequest('Invalid product ID'));
+  // }
   try {
-    const product = await findProductById(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
-    res.json(product);
+    const product = await findProductById(productId);
+    if (!product) {
+      return next(ApiError.NotFound('Product not found'));
+    }
+
+    const [reviews, total, userReview] = await Promise.all([
+      ReviewCollection.find({ productId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      ReviewCollection.countDocuments({ productId }),
+      userId ? ReviewCollection.findOne({ productId, userId }).lean() : null,
+    ]);
+
+    res.json({
+      product,
+      reviews: {reviews,  pagination: {
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+      }},
+      userReview: userReview || null,
+
+    });
   } catch (error) {
     // res.status(500).json({ message: 'Server error' });
-    next(error);
+    next(ApiError.InternalError('Failed to load product with reviews'));
   }
 };
 

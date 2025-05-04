@@ -28,5 +28,5 @@ const pharmacySchema = new mongoose.Schema(
   { timestamps: true, collection: 'pharmacies' },
 );
 
-const Pharmacy = mongoose.model('Pharmacy', pharmacySchema);
-export default Pharmacy;
+const PharmacyCollection = mongoose.model('Pharmacy', pharmacySchema);
+export default PharmacyCollection;

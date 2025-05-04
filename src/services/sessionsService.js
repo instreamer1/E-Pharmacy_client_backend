@@ -7,7 +7,7 @@ import {
   JWT_ACCESS_EXPIRES_IN,
   JWT_REFRESH_EXPIRES_IN,
 } from '../constants/token.js';
-import Session from '../db/models/Session.js';
+import SessionCollection from '../db/models/Session.js';
 import { parseJwtExpTime } from '../utils/parseExpTime.js';
 
 export const createSession = async ({
@@ -18,7 +18,7 @@ export const createSession = async ({
   refreshJti,
 }) => {
   try {
-    const existingSession = await Session.findOne({ userId });
+    const existingSession = await SessionCollection.findOne({ userId });
     if (existingSession) {
       existingSession.accessToken = accessToken;
       existingSession.refreshToken = refreshToken;
@@ -45,7 +45,7 @@ export const createSession = async ({
       parseJwtExpTime(JWT_REFRESH_EXPIRES_IN),
     );
 
-    return await Session.create({
+    return await SessionCollection.create({
       userId,
       accessToken,
       refreshToken,
@@ -65,7 +65,7 @@ export const createSession = async ({
 
 export const findSessionByUserIdAndJti = async (userId, jti) => {
   try {
-    const session = await Session.findOne({ userId, refreshJti: jti });
+    const session = await SessionCollection.findOne({ userId, refreshJti: jti });
 
     if (!session) {
       return null;

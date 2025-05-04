@@ -1,11 +1,18 @@
 //utils/ApiError
 
-class ApiError extends Error {
+  class ApiError extends Error {
     constructor(status, message, expose = false, errors = []) {
       super(message);
       this.status = status;
+      this.name = this.constructor.name;
       this.errors = errors;
       this.expose = expose;
+
+      Error.captureStackTrace(this, this.constructor);
+    }
+    static shouldExpose(status) {
+
+      return status >= 400 && status < 500;
     }
 
     static BadRequest(message, errors = []) {
@@ -13,7 +20,7 @@ class ApiError extends Error {
     }
 
     static UnauthorizedError(message = "User is not authorized") {
-      return new ApiError(401, message, false);
+      return new ApiError(401, message);
     }
 
     static ForbiddenError(message = "Forbidden") {
