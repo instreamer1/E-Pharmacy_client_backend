@@ -44,9 +44,17 @@ authRouter.post(
   ctrlWrapper(loginController),
 );
 
-authRouter.post('/logout', verifyAccessTokenMiddleware, ctrlWrapper(logoutController));
+authRouter.post(
+  '/logout',
+  verifyRefreshTokenMiddleware,
+  ctrlWrapper(logoutController),
+);
 
-authRouter.get('/user-info',verifyAccessTokenMiddleware, ctrlWrapper(getCurrentUserController));
+authRouter.get(
+  '/user-info',
+  verifyAccessTokenMiddleware,
+  ctrlWrapper(getCurrentUserController),
+);
 
 authRouter.post(
   '/refresh',
@@ -54,8 +62,6 @@ authRouter.post(
   verifyRefreshTokenMiddleware,
   ctrlWrapper(refreshTokenController),
 );
-
-
 
 authRouter.post(
   '/request-reset-email',
