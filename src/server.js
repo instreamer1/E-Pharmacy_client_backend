@@ -73,7 +73,7 @@ const startServer = () => {
   }
 
   // Paths
-  app.use('/users', authRouter);
+  app.use('/user', authRouter);
   app.use('/products', productRoutes);
   app.use('/stores', pharmacyRoutes);
   app.use('/customer-reviews', reviewRoutes);
