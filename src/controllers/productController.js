@@ -9,7 +9,7 @@ import ApiError from '../utils/ApiError.js';
 
 export const getProducts = async (req, res, next) => {
   try {
-    const { search = '', category, page = 1, limit = 6 } = req.query;
+    const { search = '', category, page = 1, limit = 9 } = req.query;
     const data = await getFilteredProducts({
       search,
       category,
