@@ -10,7 +10,7 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 import swaggerDocs from './middlewares/swaggerDocs.js';
 import productRoutes from './routers/productRoutes.js';
-import pharmacyRoutes from './routers/pharmacyRoutes.js';
+import pharmacyRoutes from './routers/storesRoutes.js';
 import reviewRoutes from './routers/reviewRoutes.js';
 import cartRoutes from './routers/cartRoutes.js';
 import orderRoutes from './routers/orderRoutes.js';
@@ -62,7 +62,7 @@ const startServer = () => {
 
   // Middleware
   app.use(cors(corsOptions));
-  app.use(limiter);
+  // app.use(limiter);
   app.use(logger);
   app.use(cookieParser());
   app.use(express.json());

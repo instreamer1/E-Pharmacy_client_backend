@@ -52,7 +52,7 @@ export const getProductByIdWithReviews = async (req, res, next) => {
 
     res.json({
       product,
-      reviews: {reviews,  pagination: {
+      reviews: {reviews, pagination: {
         total,
         page,
         totalPages: Math.ceil(total / limit),

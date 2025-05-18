@@ -53,7 +53,7 @@ sessionSchema.pre('findOneAndUpdate', setUpdateSettings);
 sessionSchema.post('save', mongooseSaveError);
 sessionSchema.post('findOneAndUpdate', mongooseSaveError);
 
-const SessionCollection = model('session', sessionSchema);
+const SessionCollection = model('Session', sessionSchema);
 
 export default SessionCollection;
 

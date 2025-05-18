@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const pharmacySchema = new mongoose.Schema(
+const storeSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -25,8 +25,8 @@ const pharmacySchema = new mongoose.Schema(
       max: 5,
     },
   },
-  { timestamps: true, collection: 'pharmacies' },
+  { timestamps: true, collection: 'stores' },
 );
 
-const PharmacyCollection = mongoose.model('Pharmacy', pharmacySchema);
-export default PharmacyCollection;
+const StoreCollection = mongoose.model('Store', storeSchema);
+export default StoreCollection;
