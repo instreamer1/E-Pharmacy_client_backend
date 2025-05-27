@@ -1,11 +1,9 @@
-import Cart from "../db/models/Cart.js";
-
-
+import CartCollection from '../db/models/Cart.js';
 
 // GET /api/cart
-export const getCartItems = async (req, res,next) => {
+export const getCartItems = async (req, res, next) => {
   try {
-    const cart = await Cart.findOne({ _id: req.userId }); // Получаем корзину пользователя
+    const cart = await CartCollection.findOne({ _id: req.userId }).populate('items.productId'); // Получаем корзину пользователя
     if (!cart) return res.status(404).json({ message: 'Cart not found' });
     res.json(cart.items); // Возвращаем товары в корзине
   } catch (error) {
@@ -15,24 +13,32 @@ export const getCartItems = async (req, res,next) => {
 };
 
 // PUT /api/cart/update
-export const updateCart = async (req, res,next) => {
+export const updateCart = async (req, res, next) => {
+  const userId = req.userId;
+  const { productId, quantity } = req.body;
   try {
-    const { productId, quantity } = req.body;
-    const cart = await Cart.findOne({ _id: req.userId });
+    let cart = await CartCollection.findOne({ _id: userId });
 
-    if (!cart) return res.status(404).json({ message: 'Cart not found' });
-
-    const productIndex = cart.items.findIndex(item => item.productId.toString() === productId);
-
-    if (productIndex !== -1) {
-      cart.items[productIndex].quantity = quantity; // Обновляем количество товара в корзине
+    if (!cart) {
+      cart = await CartCollection.create({
+        userId,
+        items: [{ productId, quantity }],
+      });
     } else {
-      // Если товара нет в корзине, добавляем новый
-      cart.items.push({ productId, quantity });
+      const itemIndex = cart.items.findIndex(
+        (item) => item.productId.toString() === productId,
+      );
+
+      if (itemIndex !== -1) {
+        cart.items[itemIndex].quantity = quantity;
+      } else {
+        cart.items.push({ productId, quantity });
+      }
+
+      await cart.save();
     }
 
-    await cart.save();
-    res.json(cart.items);
+    res.status(200).json(cart);
   } catch (error) {
     // res.status(500).json({ message: 'Server error' });
     next(error);
@@ -40,16 +46,19 @@ export const updateCart = async (req, res,next) => {
 };
 
 // POST /api/cart/checkout
-export const checkout = async (req, res,next) => {
+export const checkout = async (req, res, next) => {
   try {
-    const cart = await Cart.findOne({ _id: req.userId });
+    const cart = await CartCollection.findOne({ _id: req.userId });
     if (!cart) return res.status(404).json({ message: 'Cart not found' });
 
     // Пример оформления покупки
     const order = {
       userId: req.userId,
       items: cart.items,
-      totalAmount: cart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0),
+      totalAmount: cart.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0,
+      ),
       status: 'Pending', // Статус заказа
       date: new Date(),
     };
@@ -66,5 +75,22 @@ export const checkout = async (req, res,next) => {
   } catch (error) {
     // res.status(500).json({ message: 'Server error' });
     next(error);
+  }
+};
+
+
+export const deleteFromCart = async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const cart = await CartCollection.findOne({ userId: req.user.id });
+    if (!cart) return res.status(404).json({ message: 'Cart not found' });
+
+    cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+    await cart.save();
+
+    res.status(200).json(cart);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
   }
 };
