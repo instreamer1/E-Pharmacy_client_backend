@@ -1,38 +1,13 @@
 import Joi from 'joi';
 
-// export const updateCartSchema = Joi.object({
-//   productId: Joi.string().required().messages({
-//     'string.base': 'Product ID must be a string',
-//     'any.required': 'Product ID is required',
-//   }),
-//   name: Joi.string().required().messages({
-//     'string.base': 'Name must be a string',
-//     'any.required': 'Name is required',
-//   }),
-//   photo: Joi.string().uri().required().messages({
-//     'string.base': 'Photo must be a valid URL',
-//     'any.required': 'Photo is required',
-//   }),
-//   price: Joi.number().positive().required().messages({
-//     'number.base': 'Price must be a number',
-//     'any.required': 'Price is required',
-//   }),
-//   quantity: Joi.number().integer().min(1).required().messages({
-//     'number.base': 'Quantity must be a number',
-//     'number.min': 'Quantity must be at least 1',
-//     'any.required': 'Quantity is required',
-//   }),
-//   descGeneral: Joi.string().optional(),
-// });
-
 export const updateCartSchema = Joi.object({
   productId: Joi.string().required().messages({
     'string.base': 'Product ID must be a string',
     'any.required': 'Product ID is required',
   }),
-  quantity: Joi.number().integer().min(1).required().messages({
+  quantity: Joi.number().integer().min(0).required().messages({
     'number.base': 'Quantity must be a number',
-    'number.min': 'Quantity must be at least 1',
+    'number.min': 'Quantity must be at least 0',
     'any.required': 'Quantity is required',
   }),
 });

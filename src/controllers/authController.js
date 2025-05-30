@@ -144,7 +144,7 @@ export const getCurrentUserController = async (req, res, next) => {
       name: user.name,
       email: user.email,
       phone: user.phone,
-      userId: user._id
+      // userId: user._id
     });
   } catch (error) {
     // res.status(500).json({ message: 'Server error' });
