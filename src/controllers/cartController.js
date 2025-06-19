@@ -3,11 +3,14 @@ import CartCollection from '../db/models/Cart.js';
 // GET /api/cart
 export const getCartItems = async (req, res, next) => {
   try {
-    const cart = await CartCollection.findOne({ _id: req.userId }).populate(
+    const cart = await CartCollection.findOne({ userId: req.userId }).populate(
       'items.productId',
     );
-    if (!cart) return res.status(404).json({ message: 'Cart not found' });
-    res.json(cart.items);
+
+    if (!cart) {
+      return res.status(200).json({ items: [] });
+    }
+    res.status(200).json({ items: cart.items });
   } catch (error) {
     next(error);
   }
