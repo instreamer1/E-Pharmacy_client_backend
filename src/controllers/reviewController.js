@@ -45,7 +45,8 @@ export const getCustomerReviews = async (req, res) => {
 
 export const createCustomerReview = async (req, res, next) => {
   try {
-    const { userId, productId, rating, name, testimonial } = req.body;
+     const userId = req.userId;
+    const { productId, rating, name, testimonial } = req.body;
     const review = await createReview({ userId, productId, rating, name, testimonial });
     res.status(201).json(review);
   } catch (error) {
