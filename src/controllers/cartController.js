@@ -1,4 +1,6 @@
 import CartCollection from '../db/models/Cart.js';
+import OrderCollection from '../db/models/Order.js';
+import ProductCollection from '../db/models/Product.js';
 
 // GET /api/cart
 export const getCartItems = async (req, res, next) => {
@@ -62,33 +64,64 @@ export const updateCart = async (req, res, next) => {
 
 // POST /api/cart/checkout
 export const checkout = async (req, res, next) => {
+  const userId = req.userId;
+  const { items, shippingInfo, paymentMethod } = req.body;
+  const clientTotal = Number(req.body.total);
+
   try {
-    const cart = await CartCollection.findOne({ _id: req.userId });
-    if (!cart) return res.status(404).json({ message: 'Cart not found' });
+    if (!items || items.length === 0) {
+      return res.status(400).json({ message: 'Cart is empty' });
+    }
 
-    // Пример оформления покупки
-    const order = {
-      userId: req.userId,
-      items: cart.items,
-      totalAmount: cart.items.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0,
-      ),
-      status: 'Pending', // Статус заказа
+    // Получаем актуальные цены продуктов
+    const productIds = items.map((i) => i.productId);
+    const products = await ProductCollection.find({ _id: { $in: productIds } });
+
+    // Формируем массив для заказа с актуальными данными и считаем total
+    let totalAmount = 0;
+    const orderItems = items.map((item) => {
+      const product = products.find((p) => p._id.toString() === item.productId);
+      if (!product) throw new Error(`Product not found: ${item.productId}`);
+
+      const price = product.price;
+      totalAmount += price * item.quantity;
+
+      return {
+        productId: product._id,
+        name: product.name,
+        photo: product.photo,
+        price,
+        quantity: item.quantity,
+      };
+    });
+
+    totalAmount = Number(totalAmount.toFixed(2));
+    if (clientTotal !== totalAmount) {
+      return res.status(400).json({
+        message: 'Total price mismatch. Please update your cart and try again.',
+      });
+    }
+    // Создаем и сохраняем заказ
+    const order = new OrderCollection({
+      userId,
+      items: orderItems,
+      totalAmount,
+      paymentMethod,
+      shippingInfo,
+      status: 'Pending',
       date: new Date(),
-    };
+    });
+    await order.save();
 
-    // Сохранение заказа в базе данных (например, в коллекции orders)
-    // В этом примере заказ просто выводится
-    console.log(order);
+    // Очищаем корзину
+    const cart = await CartCollection.findOne({ userId });
+    if (cart) {
+      cart.items = [];
+      await cart.save();
+    }
 
-    // Очистка корзины после оформления
-    cart.items = [];
-    await cart.save();
-
-    res.status(201).json(order); // Возвращаем заказ
+    res.status(201).json(order);
   } catch (error) {
-    // res.status(500).json({ message: 'Server error' });
     next(error);
   }
 };

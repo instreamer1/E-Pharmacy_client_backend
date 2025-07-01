@@ -25,10 +25,6 @@ export const checkoutCartSchema = Joi.object({
           'number.min': 'Quantity must be at least 1',
           'any.required': 'Quantity is required',
         }),
-        price: Joi.number().required().messages({
-          'number.base': 'Price must be a number',
-          'any.required': 'Price is required',
-        }),
       }),
     )
     .required()
@@ -36,8 +32,28 @@ export const checkoutCartSchema = Joi.object({
       'array.base': 'Items must be an array',
       'any.required': 'Items are required',
     }),
-  totalAmount: Joi.number().required().messages({
-    'number.base': 'Total amount must be a number',
-    'any.required': 'Total amount is required',
+
+  total: Joi.number().required().messages({
+    'number.base': 'Total must be a number',
+    'any.required': 'Total is required',
+  }),
+
+  paymentMethod: Joi.string().valid('Cash On Delivery', 'Bank').required().messages({
+    'any.only': 'Payment method must be one of Cash On Delivery or Bank',
+    'any.required': 'Payment method is required',
+  }),
+
+  shippingInfo: Joi.object({
+    name: Joi.string().required().messages({ 'any.required': 'Name is required' }),
+    email: Joi.string().email().required().messages({ 'any.required': 'Email is required', 'string.email': 'Email must be valid' }),
+    phone: Joi.string().required().messages({ 'any.required': 'Phone is required' }),
+    address: Joi.string().required().messages({ 'any.required': 'Address is required' }),
+  }).required().messages({
+    'any.required': 'Shipping info is required',
+  }),
+
+  createdAt: Joi.date().iso().required().messages({
+    'date.base': 'createdAt must be a valid date',
+    'any.required': 'createdAt is required',
   }),
 });
