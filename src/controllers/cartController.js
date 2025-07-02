@@ -73,11 +73,11 @@ export const checkout = async (req, res, next) => {
       return res.status(400).json({ message: 'Cart is empty' });
     }
 
-    // Получаем актуальные цены продуктов
+   
     const productIds = items.map((i) => i.productId);
     const products = await ProductCollection.find({ _id: { $in: productIds } });
 
-    // Формируем массив для заказа с актуальными данными и считаем total
+
     let totalAmount = 0;
     const orderItems = items.map((item) => {
       const product = products.find((p) => p._id.toString() === item.productId);
@@ -97,11 +97,13 @@ export const checkout = async (req, res, next) => {
 
     totalAmount = Number(totalAmount.toFixed(2));
     if (clientTotal !== totalAmount) {
-      return res.status(400).json({
-        message: 'Total price mismatch. Please update your cart and try again.',
-      });
+     return res.status(409).json({
+    message: 'Price mismatch detected. Please refresh your cart and try again.',
+    code: 'PRICE_MISMATCH',
+    serverTotal: totalAmount,
+  });
     }
-    // Создаем и сохраняем заказ
+
     const order = new OrderCollection({
       userId,
       items: orderItems,
@@ -113,7 +115,7 @@ export const checkout = async (req, res, next) => {
     });
     await order.save();
 
-    // Очищаем корзину
+
     const cart = await CartCollection.findOne({ userId });
     if (cart) {
       cart.items = [];
