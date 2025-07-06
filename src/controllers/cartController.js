@@ -1,11 +1,11 @@
-import CartCollection from '../db/models/Cart.js';
-import OrderCollection from '../db/models/Order.js';
-import ProductCollection from '../db/models/Product.js';
+import CartModel from '../db/models/Cart.js';
+import OrderModel from '../db/models/Order.js';
+import ProductModel from '../db/models/Product.js';
 
 // GET /api/cart
 export const getCartItems = async (req, res, next) => {
   try {
-    const cart = await CartCollection.findOne({ userId: req.userId }).populate(
+    const cart = await CartModel.findOne({ userId: req.userId }).populate(
       'items.productId',
     );
 
@@ -24,11 +24,11 @@ export const updateCart = async (req, res, next) => {
   const { productId, quantity } = req.body;
 
   try {
-    let cart = await CartCollection.findOne({ userId });
+    let cart = await CartModel.findOne({ userId });
 
     if (!cart) {
       if (quantity > 0) {
-        cart = await CartCollection.create({
+        cart = await CartModel.create({
           userId,
           items: [{ productId, quantity }],
         });
@@ -73,10 +73,8 @@ export const checkout = async (req, res, next) => {
       return res.status(400).json({ message: 'Cart is empty' });
     }
 
-   
     const productIds = items.map((i) => i.productId);
-    const products = await ProductCollection.find({ _id: { $in: productIds } });
-
+    const products = await ProductModel.find({ _id: { $in: productIds } });
 
     let totalAmount = 0;
     const orderItems = items.map((item) => {
@@ -97,14 +95,15 @@ export const checkout = async (req, res, next) => {
 
     totalAmount = Number(totalAmount.toFixed(2));
     if (clientTotal !== totalAmount) {
-     return res.status(409).json({
-    message: 'Price mismatch detected. Please refresh your cart and try again.',
-    code: 'PRICE_MISMATCH',
-    serverTotal: totalAmount,
-  });
+      return res.status(409).json({
+        message:
+          'Price mismatch detected. Please refresh your cart and try again.',
+        code: 'PRICE_MISMATCH',
+        serverTotal: totalAmount,
+      });
     }
 
-    const order = new OrderCollection({
+    const order = new OrderModel({
       userId,
       items: orderItems,
       totalAmount,
@@ -115,8 +114,7 @@ export const checkout = async (req, res, next) => {
     });
     await order.save();
 
-
-    const cart = await CartCollection.findOne({ userId });
+    const cart = await CartModel.findOne({ userId });
     if (cart) {
       cart.items = [];
       await cart.save();

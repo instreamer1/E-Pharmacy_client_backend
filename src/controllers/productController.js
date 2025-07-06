@@ -1,5 +1,5 @@
 // GET /api/products?search=aspirin&category=Medicine
-import ReviewCollection from '../db/models/Review.js';
+import ReviewModel from '../db/models/Review.js';
 import {
   findAllCategories,
   findProductById,
@@ -41,24 +41,26 @@ export const getProductByIdWithReviews = async (req, res, next) => {
     }
 
     const [reviews, total, userReview] = await Promise.all([
-      ReviewCollection.find({ productId })
+      ReviewModel.find({ productId })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean(),
-      ReviewCollection.countDocuments({ productId }),
-      userId ? ReviewCollection.findOne({ productId, userId }).lean() : null,
+      ReviewModel.countDocuments({ productId }),
+      userId ? ReviewModel.findOne({ productId, userId }).lean() : null,
     ]);
 
     res.json({
       product,
-      reviews: {reviews, pagination: {
-        total,
-        page,
-        totalPages: Math.ceil(total / limit),
-      }},
+      reviews: {
+        reviews,
+        pagination: {
+          total,
+          page,
+          totalPages: Math.ceil(total / limit),
+        },
+      },
       userReview: userReview || null,
-
     });
   } catch (error) {
     // res.status(500).json({ message: 'Server error' });

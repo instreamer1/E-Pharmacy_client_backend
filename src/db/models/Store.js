@@ -1,4 +1,34 @@
 import mongoose from 'mongoose';
+const workingHoursSchema = new mongoose.Schema({
+  monday: {
+    open: String,  // формат "HH:mm"
+    close: String,
+  },
+  tuesday: {
+    open: String,
+    close: String,
+  },
+  wednesday: {
+    open: String,
+    close: String,
+  },
+  thursday: {
+    open: String,
+    close: String,
+  },
+  friday: {
+    open: String,
+    close: String,
+  },
+  saturday: {
+    open: String,
+    close: String,
+  },
+  sunday: {
+    open: String,
+    close: String,
+  },
+}, { _id: false });
 
 const storeSchema = new mongoose.Schema(
   {
@@ -24,9 +54,15 @@ const storeSchema = new mongoose.Schema(
       min: 0,
       max: 5,
     },
+    location: {
+      type: { type: String, default: 'Point' },
+      coordinates: [Number], // [lng, lat]
+    },
+     workingHours: workingHoursSchema,
   },
   { timestamps: true, collection: 'stores' },
 );
 
-const StoreCollection = mongoose.model('Store', storeSchema);
-export default StoreCollection;
+storeSchema.index({ location: '2dsphere' });
+const StoreModel = mongoose.model('Store', storeSchema, 'stores');
+export default StoreModel;

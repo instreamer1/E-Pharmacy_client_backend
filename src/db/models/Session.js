@@ -1,6 +1,5 @@
 //models/Session.js
 
-
 import { Schema, model } from 'mongoose';
 import { mongooseSaveError, setUpdateSettings } from './hooks.js';
 
@@ -42,18 +41,16 @@ const sessionSchema = new Schema(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 
 sessionSchema.index({ accessJti: 1 });
 sessionSchema.index({ refreshJti: 1 });
 
-
 sessionSchema.pre('findOneAndUpdate', setUpdateSettings);
 sessionSchema.post('save', mongooseSaveError);
 sessionSchema.post('findOneAndUpdate', mongooseSaveError);
 
-const SessionCollection = model('Session', sessionSchema);
+const SessionModel = model('Session', sessionSchema);
 
-export default SessionCollection;
-
+export default SessionModel;

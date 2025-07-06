@@ -1,6 +1,5 @@
-import StoreCollection from '../db/models/Store.js';
-import { findAllStores } from '../services/storeServices.js';
-
+import StoreModel from '../db/models/Store.js';
+import { findAllStores, findNearestStores, findRandomNearestStores } from '../services/storeServices.js';
 
 // GET /api/stores
 export const getAllStores = async (req, res, next) => {
@@ -17,10 +16,19 @@ export const getAllStores = async (req, res, next) => {
 // GET /api/stores/nearest
 export const getNearestStores = async (req, res, next) => {
   try {
-    // Это заглушка. В будущем можно прикрутить geo-поиск
-    const stores = await StoreCollection.find().limit(6).sort({ rating: -1 });
-    res.json(stores);
+    const { lat, lng } = req.query;
+
+    if (lat && lng) {
+      const stores = await findNearestStores(lat, lng);
+
+      return res.status(200).json(stores);
+    }
+    // random
+    const randomStores = await findRandomNearestStores();
+    //rating
+    // const randomStores = await StoreModel.find().limit(6).sort({ rating: -1 });
+    return res.status(200).json(randomStores);
   } catch (error) {
-  next(error);
+    next(error);
   }
 };

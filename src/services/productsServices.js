@@ -1,4 +1,4 @@
-import ProductCollection from '../db/models/Product.js';
+import ProductModel from '../db/models/Product.js';
 
 export const getFilteredProducts = async ({
   search = '',
@@ -6,7 +6,6 @@ export const getFilteredProducts = async ({
   page = 1,
   limit = 9,
 }) => {
-
   const actualLimit = Math.min(Number(limit), 12);
 
   const query = {
@@ -20,8 +19,8 @@ export const getFilteredProducts = async ({
   const skip = (page - 1) * actualLimit;
 
   const [products, total] = await Promise.all([
-    ProductCollection.find(query).skip(skip).limit(Number(actualLimit)),
-    ProductCollection.countDocuments(query),
+    ProductModel.find(query).skip(skip).limit(Number(actualLimit)),
+    ProductModel.countDocuments(query),
   ]);
 
   return {
@@ -34,10 +33,10 @@ export const getFilteredProducts = async ({
 };
 
 export const findProductById = (filter) => {
-  const product = ProductCollection.findById(filter);
+  const product = ProductModel.findById(filter);
   return product;
 };
 
 export const findAllCategories = () => {
-  return ProductCollection.distinct('category');
+  return ProductModel.distinct('category');
 };

@@ -1,12 +1,11 @@
-import ReviewCollection from "../db/models/Review.js";
-import { createReview } from "../services/reviewsServices.js";
+import ReviewModel from '../db/models/Review.js';
+import { createReview } from '../services/reviewsServices.js';
 import ApiError from '../utils/ApiError.js';
-
 
 // GET /api/customer-reviews
 // export const getCustomerReviews = async (req, res, next) => {
 //   try {
-//     const reviews = await ReviewCollection.find();
+//     const reviews = await ReviewModel.find();
 //     res.json(reviews);
 //   } catch (error) {
 //     // res.status(500).json({ message: 'Server error' });
@@ -24,11 +23,11 @@ export const getCustomerReviews = async (req, res) => {
 
   try {
     const [reviews, total] = await Promise.all([
-      ReviewCollection.find({ productId })
+      ReviewModel.find({ productId })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
-        ReviewCollection.countDocuments({ productId }),
+      ReviewModel.countDocuments({ productId }),
     ]);
 
     res.json({
@@ -42,12 +41,17 @@ export const getCustomerReviews = async (req, res) => {
   }
 };
 
-
 export const createCustomerReview = async (req, res, next) => {
   try {
-     const userId = req.userId;
+    const userId = req.userId;
     const { productId, rating, name, testimonial } = req.body;
-    const review = await createReview({ userId, productId, rating, name, testimonial });
+    const review = await createReview({
+      userId,
+      productId,
+      rating,
+      name,
+      testimonial,
+    });
     res.status(201).json(review);
   } catch (error) {
     next(error);
@@ -60,14 +64,16 @@ export const changeCustomerReview = async (req, res) => {
   const userId = req.user?._id;
 
   try {
-    const review = await ReviewCollection.findById(id);
+    const review = await ReviewModel.findById(id);
 
     if (!review) {
       return res.status(404).json({ message: 'Отзыв не найден' });
     }
 
     if (!review.userId.equals(userId)) {
-      return res.status(403).json({ message: 'Нет доступа к редактированию этого отзыва' });
+      return res
+        .status(403)
+        .json({ message: 'Нет доступа к редактированию этого отзыва' });
     }
 
     review.rating = rating ?? review.rating;
@@ -79,23 +85,27 @@ export const changeCustomerReview = async (req, res) => {
 
     res.json(review);
   } catch (error) {
-    res.status(500).json({ message: 'Ошибка при редактировании отзыва', error });
+    res
+      .status(500)
+      .json({ message: 'Ошибка при редактировании отзыва', error });
   }
 };
 
-export const deleteCustomerReview =async (req, res) => {
+export const deleteCustomerReview = async (req, res) => {
   const { id } = req.params;
   const userId = req.user?._id;
 
   try {
-    const review = await ReviewCollection.findById(id);
+    const review = await ReviewModel.findById(id);
 
     if (!review) {
       return res.status(404).json({ message: 'Отзыв не найден' });
     }
 
     if (!review.userId.equals(userId)) {
-      return res.status(403).json({ message: 'Нет доступа к удалению этого отзыва' });
+      return res
+        .status(403)
+        .json({ message: 'Нет доступа к удалению этого отзыва' });
     }
 
     await review.deleteOne();

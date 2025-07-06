@@ -1,33 +1,36 @@
 // services/userService.js
 
-import UsersCollection from '../db/models/User.js';
+import UserModel from '../db/models/User.js';
 
 export const signup = async (data) => {
-  const newUser = await UsersCollection.create(data);
+  const newUser = await UserModel.create(data);
   return newUser;
 };
 
-export const findUser = (filter) => UsersCollection.findOne(filter);
+export const findUser = (filter) => UserModel.findOne(filter);
 
 export const findUserByEmail = (filter) =>
-  UsersCollection.findOne(filter).select('+password');
+  UserModel.findOne(filter).select('+password');
 
 export const findUserById = (filter) => {
-  return UsersCollection.findById(filter).select('-password -__v');
+  return UserModel.findById(filter).select('-password -__v');
 };
 
 export const updateUser = (filter, updateData) => {
-  return UsersCollection.findOneAndUpdate(filter, { $set: updateData }, { new: true });
+  return UserModel.findOneAndUpdate(
+    filter,
+    { $set: updateData },
+    { new: true },
+  );
 };
-
 
 export const userService = {
   updateUser: (filter, updateData) => {
-    return UsersCollection.findOneAndUpdate(filter, updateData, { new: true });
+    return UserModel.findOneAndUpdate(filter, updateData, { new: true });
   },
   getUserById: (filter) => {
-    return UsersCollection.findOne(filter);
+    return UserModel.findOne(filter);
   },
 };
 
-export const findAllUsers = () => UsersCollection.find();
+export const findAllUsers = () => UserModel.find();

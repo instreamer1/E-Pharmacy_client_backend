@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
-      minlength: [7, 'Password must be at least 8 characters'],
+      minlength: [7, 'Password must be at least 7 characters'],
       maxlength: [30, 'The password must be no more than 30 characters long.'],
       validate: {
         validator: (password) => /^\S+$/.test(password),
@@ -80,6 +80,6 @@ UserSchema.set('toJSON', {
 UserSchema.pre('findOneAndUpdate', setUpdateSettings);
 UserSchema.post('save', mongooseSaveError);
 
-const UsersCollection = mongoose.model('User', UserSchema);
+const UserModel = mongoose.model('User', UserSchema);
 
-export default UsersCollection;
+export default UserModel;
