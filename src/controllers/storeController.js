@@ -1,4 +1,3 @@
-import StoreModel from '../db/models/Store.js';
 import { findAllStores, findNearestStores, findRandomNearestStores } from '../services/storeServices.js';
 
 // GET /api/stores

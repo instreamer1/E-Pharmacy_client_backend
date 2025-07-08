@@ -14,7 +14,6 @@ const optionalAuth = async (req, res, next) => {
       const user = await findUserById(decoded.id);
       req.user = user;
     } catch (error) {
-      // Если токен недействителен — не блокируем, но и не добавляем пользователя
       req.user = null;
     }
   }

@@ -23,7 +23,7 @@ export const phone = Joi.string()
 export const password = Joi.string()
   .min(7)
   .max(30)
-  .pattern(/^\S+$/) // без пробелов
+  .pattern(/^\S+$/) // without spaces
   .required()
   .messages({
     'string.pattern.base': 'Password cannot contain spaces',

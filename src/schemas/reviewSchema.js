@@ -1,10 +1,6 @@
 import Joi from 'joi';
 
 export const reviewSchema = Joi.object({
-  // userId: Joi.string().required().messages({
-  //   'string.base': `"userId" must be a string`,
-  //   'any.required': `"userId" is required`,
-  // }),
 
   productId: Joi.string().required().messages({
     'string.base': `"productId" must be a string`,

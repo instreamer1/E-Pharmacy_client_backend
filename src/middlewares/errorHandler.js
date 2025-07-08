@@ -20,55 +20,6 @@ const logger = pinoHttp({ logger: loggerInstance });
 
 const isDev = env('NODE_ENV', 'development') === 'development';
 
-// const errorHandler = (err, req, res, next) => {
-//   if (isDev) {
-//     console.error('\x1b[31m', '--- ERROR DETAILS (development) ---');
-//     console.error(err);
-//     console.error('\x1b[0m');
-//   }
-
-//   logger.logger.error({
-//     error: {
-//       name: err.name,
-//       message: err.message,
-//       code: err.code,
-//     },
-//     request: {
-//       method: req.method,
-//       url: req.originalUrl,
-//       params: req.params,
-//       query: req.query,
-//     },
-//     ...(isDev && { stack: err.stack }),
-//   });
-
-//   if (err instanceof ApiError) {
-//     const { status, message, expose, stack } = err;
-//     return res.status(status).json({
-//       status,
-//       message: expose ? message : 'Internal Server Error',
-//       ...(isDev && {
-//         error: {
-//           type: err.name,
-//           details: expose ? err.errors : undefined,
-//           stack,
-//         },
-//       }),
-//     });
-//   }
-
-//   return res.status(500).json({
-//     status: 500,
-//     message: 'Internal Server Error',
-//     ...(isDev && {
-//       error: {
-//         type: err.name,
-//         message: err.message,
-//         stack: err.stack,
-//       },
-//     }),
-//   });
-// };
 
 
 const errorHandler = (err, req, res, next) => {

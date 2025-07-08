@@ -2,19 +2,8 @@ import ReviewModel from '../db/models/Review.js';
 import { createReview } from '../services/reviewsServices.js';
 import ApiError from '../utils/ApiError.js';
 
-// GET /api/customer-reviews
-// export const getCustomerReviews = async (req, res, next) => {
-//   try {
-//     const reviews = await ReviewModel.find();
-//     res.json(reviews);
-//   } catch (error) {
-//     // res.status(500).json({ message: 'Server error' });
-//     next(error);
-//   }
-// };
 
-// GET /reviews?page=1&limit=10
-export const getCustomerReviews = async (req, res) => {
+export const getCustomerReviews = async (req, res, next) => {
   const { productId } = req.params;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -37,7 +26,9 @@ export const getCustomerReviews = async (req, res) => {
       totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
+    //  next(ApiError.InternalError('Failed to load product with reviews'));
     res.status(500).json({ message: 'Ошибка при получении отзывов', error });
+
   }
 };
 

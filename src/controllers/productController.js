@@ -31,9 +31,6 @@ export const getProductByIdWithReviews = async (req, res, next) => {
   const skip = (page - 1) * limit;
   const userId = req.user?._id;
 
-  // if (!mongoose.Types.ObjectId.isValid(productId)) {
-  //   return next(ApiError.BadRequest('Invalid product ID'));
-  // }
   try {
     const product = await findProductById(productId);
     if (!product) {
@@ -63,7 +60,7 @@ export const getProductByIdWithReviews = async (req, res, next) => {
       userReview: userReview || null,
     });
   } catch (error) {
-    // res.status(500).json({ message: 'Server error' });
+   
     next(ApiError.InternalError('Failed to load product with reviews'));
   }
 };

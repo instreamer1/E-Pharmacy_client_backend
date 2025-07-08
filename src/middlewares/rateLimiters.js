@@ -11,8 +11,8 @@ export const loginLimiter = createRateLimiter({
 });
 
 export const refreshLimiter = createRateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 минут
-  max: 5, // Макс. 5 запросов
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 5, // Max. 5 requests
   message: 'Too many refresh requests, please try again later',
   notifyEmail: ADMIN_EMAIL,
 });

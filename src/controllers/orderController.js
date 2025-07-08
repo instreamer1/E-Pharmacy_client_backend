@@ -7,7 +7,6 @@ export const getOrders = async (req, res, next) => {
     const orders = await Order.find({ userId: req.userId }); // Получаем все заказы для пользователя
     res.json(orders);
   } catch (error) {
-    // res.status(500).json({ message: 'Server error' });
     next(error);
   }
 };
@@ -19,7 +18,6 @@ export const getOrderById = async (req, res, next) => {
     if (!order) return res.status(404).json({ message: 'Order not found' });
     res.json(order);
   } catch (error) {
-    // res.status(500).json({ message: 'Server error' });
     next(error);
   }
 };

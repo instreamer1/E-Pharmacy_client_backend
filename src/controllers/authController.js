@@ -144,10 +144,8 @@ export const getCurrentUserController = async (req, res, next) => {
       name: user.name,
       email: user.email,
       phone: user.phone,
-      // userId: user._id
     });
   } catch (error) {
-    // res.status(500).json({ message: 'Server error' });
     next(error);
   }
 };
@@ -220,7 +218,6 @@ export const refreshTokenController = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-    // res.status(500).json({ message: 'Internal server error' });
   }
 };
 

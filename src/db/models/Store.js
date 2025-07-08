@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const workingHoursSchema = new mongoose.Schema({
   monday: {
-    open: String,  // формат "HH:mm"
+    open: String,  //  "HH:mm"
     close: String,
   },
   tuesday: {

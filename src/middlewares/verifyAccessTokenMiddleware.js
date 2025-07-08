@@ -14,11 +14,7 @@ const verifyAccessTokenMiddleware = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
     const { userId, jti } = verifyAccessToken(token, 'access');
 
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('User ID:', userId);
-      console.log('Token JTI:', jti);
-    }
-
+   
     if (await checkTokenRevoked(jti)) {
       throw ApiError.UnauthorizedError('Token has been revoked ');
     }
