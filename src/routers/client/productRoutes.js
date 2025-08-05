@@ -3,9 +3,9 @@ import {
   getProducts,
   getAllCategories,
   getProductByIdWithReviews,
-} from '../controllers/productController.js';
-import ctrlWrapper from '../utils/ctrlWrapper.js';
-import optionalAuth from '../middlewares/optionalAuthMiddleware.js';
+} from '../../controllers/productController.js';
+import ctrlWrapper from '../../utils/ctrlWrapper.js';
+import optionalAuth from '../../middlewares/optionalAuthMiddleware.js';
 
 const productRoutes = express.Router();
 

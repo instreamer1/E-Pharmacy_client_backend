@@ -1,7 +1,7 @@
 import express from 'express';
-import { getOrders, getOrderById, createOrder } from '../controllers/orderController.js';
-import ctrlWrapper from '../utils/ctrlWrapper.js';
-import verifyAccessTokenMiddleware from '../middlewares/verifyAccessTokenMiddleware.js';
+import { getOrders, getOrderById, createOrder } from '../../controllers/orderController.js';
+import ctrlWrapper from '../../utils/ctrlWrapper.js';
+import verifyAccessTokenMiddleware from '../../middlewares/verifyAccessTokenMiddleware.js';
 
 const orderRoutes = express.Router();
 

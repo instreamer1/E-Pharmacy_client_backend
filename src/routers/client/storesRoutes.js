@@ -1,6 +1,6 @@
 import express from 'express';
-import { getAllStores, getNearestStores } from '../controllers/storeController.js';
-import ctrlWrapper from '../utils/ctrlWrapper.js';
+import { getAllStores, getNearestStores } from '../../controllers/storeController.js';
+import ctrlWrapper from '../../utils/ctrlWrapper.js';
 
 const pharmacyRoutes = express.Router();
 

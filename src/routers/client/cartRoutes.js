@@ -3,11 +3,11 @@ import {
   getCartItems,
   updateCart,
   checkout,
-} from '../controllers/cartController.js';
-import ctrlWrapper from '../utils/ctrlWrapper.js';
-import { checkoutCartSchema, updateCartSchema } from '../schemas/cartSchema.js';
-import validateBody from '../utils/validateBody.js';
-import verifyAccessTokenMiddleware from '../middlewares/verifyAccessTokenMiddleware.js';
+} from '../../controllers/cartController.js';
+import ctrlWrapper from '../../utils/ctrlWrapper.js';
+import { checkoutCartSchema, updateCartSchema } from '../../schemas/cartSchema.js';
+import validateBody from '../../utils/validateBody.js';
+import verifyAccessTokenMiddleware from '../../middlewares/verifyAccessTokenMiddleware.js';
 
 const cartRoutes = express.Router();
 
