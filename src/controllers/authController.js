@@ -6,6 +6,7 @@ import Session from '../db/models/Session.js';
 import {
   findUserByEmail,
   findUserById,
+  firstUser,
   signup,
 } from '../services/userServices.js';
 
@@ -13,7 +14,7 @@ import {
   generateTokens,
   removeSessionByJti,
   verifyRefreshToken,
-} from '../utils/tokenService.js';
+} from '../utils/token.js';
 import {
   JWT_ACCESS_EXPIRES_IN,
   JWT_REFRESH_EXPIRES_IN,
@@ -40,11 +41,15 @@ export const registerController = async (req, res, next) => {
         .json({ message: 'User with this email already exists' });
     }
 
+    const userCount = await firstUser();
+    const role = userCount === 0 ? 'admin' : 'user';
+
     await signup({
       name,
       email,
       password,
       phone,
+      role,
     });
 
     res.status(201).json({
@@ -71,7 +76,7 @@ export const loginController = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const payload = { userId: user._id };
+    const payload = { userId: user._id, role: user.role };
     const { accessToken, refreshToken, accessJti, refreshJti } =
       generateTokens(payload);
 

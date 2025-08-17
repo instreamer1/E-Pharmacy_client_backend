@@ -1,7 +1,7 @@
 //optionalAuthMiddleware.js
 
 import { findUserById } from '../services/userServices.js';
-import { verifyAccessToken } from '../utils/tokenService.js';
+import { checkTokenRevoked, verifyAccessToken } from '../utils/token.js';
 
 const optionalAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -10,11 +10,14 @@ const optionalAuth = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     try {
-      const decoded = verifyAccessToken(token);
-      const user = await findUserById(decoded.id);
-      req.user = user;
-    } catch (error) {
-      req.user = null;
+      const { userId, jti } = verifyAccessToken(token, 'access');
+
+      if (await checkTokenRevoked(jti)) return next();
+
+      const user = await findUserById(userId);
+      if (user) req.user = user;
+    } catch {
+      // Просто идём дальше без req.user
     }
   }
 

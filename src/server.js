@@ -9,11 +9,15 @@ import authRouter from './routers/authRoutes.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 import swaggerDocs from './middlewares/swaggerDocs.js';
-import productRoutes from './routers/productRoutes.js';
-import pharmacyRoutes from './routers/storesRoutes.js';
-import reviewRoutes from './routers/reviewRoutes.js';
-import cartRoutes from './routers/cartRoutes.js';
-import orderRoutes from './routers/orderRoutes.js';
+import productRoutes from './routers/client/productRoutes.js';
+import pharmacyRoutes from './routers/client/storesRoutes.js';
+import reviewRoutes from './routers/client/reviewRoutes.js';
+import cartRoutes from './routers/client/cartRoutes.js';
+import orderRoutes from './routers/admin/orderRoutes.js';
+import productsRoutes from './routers/admin/productRoutes.js';
+import customersRoutes from './routers/admin/customersRoutes.js';
+import dashboardRoutes from './routers/admin/dashboardRoutes.js';
+import suppliersRoutes from './routers/admin/suppliersRoutes.js';
 
 const PORT = Number(env('PORT', '3000'));
 const FRONTEND_DOMAIN = env('FRONTEND_DOMAIN');
@@ -73,12 +77,21 @@ const startServer = () => {
   }
 
   // Paths
+  //client
   app.use('/user', authRouter);
   app.use('/products', productRoutes);
   app.use('/stores', pharmacyRoutes);
   app.use('/customer-reviews', reviewRoutes);
   app.use('/cart', cartRoutes);
+
+  // admin
+
+  app.use('/dashboard', dashboardRoutes);
+  app.use('/customers', customersRoutes);
   app.use('/orders', orderRoutes);
+  app.use('/products', productsRoutes);
+  app.use('/suppliers', suppliersRoutes);
+
 
   app.use(notFoundHandler);
   app.use(errorHandler);

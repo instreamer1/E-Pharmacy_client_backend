@@ -7,6 +7,8 @@ export const signup = async (data) => {
   return newUser;
 };
 
+export const firstUser = async () => UserModel.countDocuments();
+
 export const findUser = (filter) => UserModel.findOne(filter);
 
 export const findUserByEmail = (filter) =>

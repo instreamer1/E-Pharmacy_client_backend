@@ -1,4 +1,4 @@
-// utils/tokenService.js
+// utils/token.js
 
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
@@ -37,14 +37,15 @@ export const generateTokens = (userPayload) => {
   };
 };
 
-export const verifyAccessToken = (token) => {
+export const verifyAccessToken = (token, type = 'access') => {
   try {
-    const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
+   const secret = type === 'access' ? JWT_ACCESS_SECRET : JWT_REFRESH_SECRET;
+    const decoded = jwt.verify(token, secret);
 
     return decoded;
   } catch (error) {
     console.error("error", error);
-    throw ApiError.UnauthorizedError('Invalid or expired access token');
+    throw ApiError.UnauthorizedError(`Invalid or expired ${type} token`);
   }
 };
 

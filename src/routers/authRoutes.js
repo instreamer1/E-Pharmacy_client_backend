@@ -30,6 +30,7 @@ import {
 } from '../middlewares/rateLimiters.js';
 import verifyAccessTokenMiddleware from '../middlewares/verifyAccessTokenMiddleware.js';
 
+
 const authRouter = Router();
 
 authRouter.post(

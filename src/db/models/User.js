@@ -7,6 +7,7 @@ import {
   mongooseSaveError,
   setUpdateSettings,
 } from './hooks.js';
+import { ROLES } from '../../constants/roles.js';
 
 const UserSchema = new mongoose.Schema(
   {
@@ -57,11 +58,11 @@ const UserSchema = new mongoose.Schema(
       default: null,
       select: false,
     },
-    role: {
-      type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
-    },
+ role: {
+    type: String,
+    enum: Object.values(ROLES),
+    default: ROLES.USER,
+  },
   },
   { timestamps: true },
 );

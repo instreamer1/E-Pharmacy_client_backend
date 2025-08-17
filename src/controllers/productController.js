@@ -9,10 +9,11 @@ import ApiError from '../utils/ApiError.js';
 
 export const getProducts = async (req, res, next) => {
   try {
-    const { search = '', category, page = 1, limit = 9 } = req.query;
+    const { search = '', category, discount, page = 1, limit = 9 } = req.query;
     const data = await getFilteredProducts({
       search,
       category,
+      discount,
       page,
       limit,
     });
@@ -60,7 +61,7 @@ export const getProductByIdWithReviews = async (req, res, next) => {
       userReview: userReview || null,
     });
   } catch (error) {
-   
+
     next(ApiError.InternalError('Failed to load product with reviews'));
   }
 };

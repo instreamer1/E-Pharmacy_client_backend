@@ -30,14 +30,11 @@ export const password = Joi.string()
     'string.empty': 'Password is required',
   });
 
-export const role = Joi.string().valid('user', 'admin').default('user');
-
 export const createUserSchema = Joi.object({
   name,
   email,
   phone,
   password,
-  role,
 });
 
 export const loginUserSchema = Joi.object({
