@@ -8,7 +8,6 @@ export const getFilteredProducts = async ({
   limit = 9,
 }) => {
   const actualLimit = Math.min(Number(limit), 12);
-  console.log('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG', discount);
 
   const query = {
     name: { $regex: search, $options: 'i' },
@@ -18,13 +17,13 @@ export const getFilteredProducts = async ({
     query.category = category;
   }
 
-  if (discount) {
+  if (discount !== undefined && discount !== null) {
     query.isDiscountActive = true;
-    query.discount = { $gte: Number(discount) };
+    query.discount = Number(discount);
   }
 
   const skip = (page - 1) * actualLimit;
-  console.log('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG', query);
+
   const [products, total] = await Promise.all([
     ProductModel.find(query).skip(skip).limit(Number(actualLimit)),
     ProductModel.countDocuments(query),
@@ -34,7 +33,7 @@ export const getFilteredProducts = async ({
     total,
     page: Number(page),
     limit: actualLimit,
-    totalPages: Math.ceil(total / limit),
+    totalPages: Math.ceil(total / actualLimit),
     products,
   };
 };

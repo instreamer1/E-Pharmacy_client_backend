@@ -66,7 +66,7 @@ const startServer = () => {
 
   // Middleware
   app.use(cors(corsOptions));
-  app.use(limiter);
+  // app.use(limiter);
   app.use(logger);
   app.use(cookieParser());
   app.use(express.json());
